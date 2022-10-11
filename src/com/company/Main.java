@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class Main {
 
+    //comment
     public static void main(String[] args) {
         try {
             Game.setCurrent(readCondition("initial.txt"));
