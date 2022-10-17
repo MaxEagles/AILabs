@@ -68,9 +68,9 @@ public class MainFrame extends JFrame {
         panel.add(field, constraints);
 
         JMenuBar menuBar = new JMenuBar();
-        JMenuItem solveSmart = new JMenuItem("Решить двунапр.");
-        JMenuItem solve = new JMenuItem("Решить");
         JMenuItem next = new JMenuItem("->");
+        JMenuItem solve = new JMenuItem("1");
+        JMenuItem solveSmart = new JMenuItem("2");
         next.setEnabled(false);
         menuBar.add(next);
         menuBar.add(solve);
