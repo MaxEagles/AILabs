@@ -71,14 +71,20 @@ public class MainFrame extends JFrame {
         JMenuItem next = new JMenuItem("->");
         JMenuItem solve = new JMenuItem("1");
         JMenuItem solveSmart = new JMenuItem("2");
+        JMenuItem solveEvristic1 = new JMenuItem("3.1");
+        JMenuItem solveEvristic2 = new JMenuItem("3.2");
         next.setEnabled(false);
         menuBar.add(next);
         menuBar.add(solve);
         menuBar.add(solveSmart);
+        menuBar.add(solveEvristic1);
+        menuBar.add(solveEvristic2);
         setJMenuBar(menuBar);
         solve.addActionListener(event -> {
             next.setEnabled(false);
             solveSmart.setEnabled(false);
+            solveEvristic1.setEnabled(false);
+            solveEvristic2.setEnabled(false);
             Game.solve();
             Condition c = Game.getLast();
             Stack<Condition> conditions = new Stack<>();
@@ -90,6 +96,8 @@ public class MainFrame extends JFrame {
 
             next.setEnabled(true);
             solveSmart.setEnabled(true);
+            solveEvristic1.setEnabled(true);
+            solveEvristic2.setEnabled(true);
             next.addActionListener(event2 -> {
                 if(!conditions.isEmpty()) {
                     Game.setCurrent(conditions.pop());
@@ -105,6 +113,8 @@ public class MainFrame extends JFrame {
         solveSmart.addActionListener(event -> {
             next.setEnabled(false);
             solve.setEnabled(false);
+            solveEvristic1.setEnabled(false);
+            solveEvristic2.setEnabled(false);
             Game.solveSmart();
             Condition c = Game.getLast();
             Condition c2 = Game.getLast2();
@@ -123,6 +133,8 @@ public class MainFrame extends JFrame {
 
             next.setEnabled(true);
             solve.setEnabled(true);
+            solveEvristic1.setEnabled(true);
+            solveEvristic2.setEnabled(true);
             next.addActionListener(event2 -> {
                 if(!conditions.isEmpty()) {
                     Game.setCurrent(conditions.pop());
@@ -133,6 +145,66 @@ public class MainFrame extends JFrame {
                 }
                 else if(!conditions2.isEmpty()) {
                     Game.setCurrent(conditions2.poll());
+                    field.repaint();
+                    if (Game.getCurrent().equals(Game.getTarget())) {
+                        JOptionPane.showMessageDialog(MainFrame.this, "Победа!!!");
+                    }
+                }
+            });
+            JOptionPane.showMessageDialog(MainFrame.this, "Решение готово");
+        });
+
+        solveEvristic1.addActionListener(event -> {
+            next.setEnabled(false);
+            solve.setEnabled(false);
+            solveSmart.setEnabled(false);
+            solveEvristic2.setEnabled(false);
+            Game.solveEvristic(1);
+            Condition c = Game.getLast();
+            Stack<Condition> conditions = new Stack<>();
+            while (c != null) {
+                conditions.add(c);
+                c = c.getParent();
+            }
+            conditions.pop();
+
+            next.setEnabled(true);
+            solve.setEnabled(true);
+            solveSmart.setEnabled(true);
+            solveEvristic2.setEnabled(true);
+            next.addActionListener(event2 -> {
+                if(!conditions.isEmpty()) {
+                    Game.setCurrent(conditions.pop());
+                    field.repaint();
+                    if (Game.getCurrent().equals(Game.getTarget())) {
+                        JOptionPane.showMessageDialog(MainFrame.this, "Победа!!!");
+                    }
+                }
+            });
+            JOptionPane.showMessageDialog(MainFrame.this, "Решение готово");
+        });
+
+        solveEvristic2.addActionListener(event -> {
+            next.setEnabled(false);
+            solve.setEnabled(false);
+            solveSmart.setEnabled(false);
+            solveEvristic1.setEnabled(false);
+            Game.solveEvristic(2);
+            Condition c = Game.getLast();
+            Stack<Condition> conditions = new Stack<>();
+            while (c != null) {
+                conditions.add(c);
+                c = c.getParent();
+            }
+            conditions.pop();
+
+            next.setEnabled(true);
+            solve.setEnabled(true);
+            solveSmart.setEnabled(true);
+            solveEvristic1.setEnabled(true);
+            next.addActionListener(event2 -> {
+                if(!conditions.isEmpty()) {
+                    Game.setCurrent(conditions.pop());
                     field.repaint();
                     if (Game.getCurrent().equals(Game.getTarget())) {
                         JOptionPane.showMessageDialog(MainFrame.this, "Победа!!!");

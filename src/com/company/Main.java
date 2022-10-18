@@ -6,9 +6,9 @@ import java.io.FileReader;
 import java.util.Scanner;
 
 public class Main {
-
-    //comment
     public static void main(String[] args) {
+        //разница по модулю между реальным и целевым количеством цветов в строках и столбцах, делённая на 4 и округлённая в большую сторону
+        //сумма кратчайших расстояний до цели, делённая на 4
         try {
             Game.setCurrent(readCondition("initial.txt"));
             Game.setTarget(readCondition("target.txt"));
@@ -33,6 +33,7 @@ public class Main {
             System.out.println(ex.getMessage());
         }
     }
+
 
     public static Condition readCondition(String filename) throws Exception{
         try (FileReader fr = new FileReader(filename)) {

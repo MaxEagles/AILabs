@@ -1,12 +1,18 @@
 package com.company;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.function.Consumer;
 
 public class Game {
     public static final int ROWS = 4;
-    public static final int COLUMNS = 4;
+    public static final int COLUMNS = ROWS;
 
     private static Condition current;
     private static Condition target;
@@ -80,7 +86,7 @@ public class Game {
         }
     }
 
-    public static void p(Condition parent) {
+    private static void p(Condition parent) {
         for (int i = 0; i < COLUMNS; i++) {
             Condition tmp = moveDown(i, parent);
             tmp.setParent(parent);
@@ -127,7 +133,7 @@ public class Game {
         }
     }
 
-    public static void p2(Condition parent) {
+    private static void p2(Condition parent) {
         for (int i = 0; i < COLUMNS; i++) {
             Condition tmp = moveUp(i, parent);
             tmp.setParent(parent);
@@ -140,6 +146,79 @@ public class Game {
             tmp.setParent(parent);
             if (!C2.contains(tmp) && !O2.contains(tmp)) {
                 O2.add(tmp);
+            }
+        }
+    }
+
+    public static void solveEvristic(int evristicN) {
+        System.out.println("---------------------------");
+        Comparator<Condition> comparator = Comparator.comparingInt(Condition::getF);
+        O = new PriorityQueue<>(comparator);
+        C = new HashSet<>();
+        current.setF(0);
+        O.add(current);
+        while (!O.isEmpty()) {
+            System.out.println("O: " + O.size());
+            System.out.println("C: " + C.size());
+            Condition tmp = O.poll();
+            if (tmp.equals(Game.getTarget())) {
+                last = tmp;
+                return;
+            }
+            C.add(tmp);
+            p3(tmp, evristicN);
+        }
+    }
+
+    private static void p3(Condition parent, int evristicN) {
+        for (int i = 0; i < COLUMNS; i++) {
+            Condition tmp = moveDown(i, parent);
+            tmp.setParent(parent);
+            updateChild(tmp, evristicN);
+        }
+        for (int i = 0; i < ROWS; i++) {
+            Condition tmp = moveRight(i, parent);
+            tmp.setParent(parent);
+            updateChild(tmp, evristicN);
+        }
+    }
+
+    private static void updateChild(Condition condition, int evristicN) {
+        int f = 0;
+        if (evristicN == 1) {
+            f = condition.g() + condition.h1();
+        }
+        else {
+            f = condition.g() + condition.h2();
+        }
+        condition.setF(f);
+        if (!C.contains(condition) && !O.contains(condition)) {
+            O.add(condition);
+        }
+        else if(O.contains(condition)) {
+            List<Condition> conditions = new LinkedList<>();
+            Condition search = O.poll();
+            while (!search.equals(condition)) {
+                conditions.add(search);
+                search = O.poll();
+            }
+            if (search.getF() > condition.getF()) {
+                O.add(condition);
+            }
+            else {
+                conditions.add(search);
+            }
+
+            for (Condition e: conditions) {
+                O.add(e);
+            }
+        }
+        else if (C.contains(condition)) {
+            Optional<Condition> opt = C.stream().filter(c -> c.equals(condition)).findFirst();
+            Condition search = opt.get();
+            if(search.getF() > condition.getF()) {
+                C.remove(search);
+                O.add(condition);
             }
         }
     }
